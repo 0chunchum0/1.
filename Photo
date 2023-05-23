@@ -1,0 +1,80 @@
+data class Photo(
+val id: String,
+val imageUrl: String,
+val username: String,
+val timestamp: Long
+)
+
+private lateinit var photoList: List
+private lateinit var photoAdapter: PhotoAdapter
+
+private fun getRecentPhotos() {
+// Simulación de obtención de fotos recientes
+val photos = mutableListOf()
+
+// Generar fotos de ejemplo
+for (i in 1..10) {
+    val photo = Photo(
+        id = "photo_$i",
+        imageUrl = "https://example.com/photo_$i.jpg",
+        username = "user_$i",
+        timestamp = System.currentTimeMillis()
+    )
+    photos.add(photo)
+}
+
+// Actualizar la lista de fotos y notificar al adaptador
+photoList = photos
+photoAdapter.notifyDataSetChanged()
+}
+
+private fun setupRecyclerView() {
+val layoutManager = LinearLayoutManager(this)
+recyclerView.layoutManager = layoutManager
+photoAdapter = PhotoAdapter(photoList)
+recyclerView.adapter = photoAdapter
+}
+
+class PhotoAdapter(private val photoList: List) :
+RecyclerView.Adapter<PhotoAdapter.PhotoViewHolder>() {
+
+override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): PhotoViewHolder {
+    val view = LayoutInflater.from(parent.context)
+        .inflate(R.layout.item_photo, parent, false)
+    return PhotoViewHolder(view)
+}
+
+override fun onBindViewHolder(holder: PhotoViewHolder, position: Int) {
+    val photo = photoList[position]
+    holder.bind(photo)
+}
+
+override fun getItemCount(): Int {
+    return photoList.size
+}
+
+inner class PhotoViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    fun bind(photo: Photo) {
+        // Mostrar la información de la foto en el elemento de la lista
+        itemView.imageView.load(photo.imageUrl)
+        itemView.usernameTextView.text = photo.username
+        itemView.timestampTextView.text = formatTimestamp(photo.timestamp)
+    }
+}
+}
+
+<LinearLayout
+...
+>
+<ImageView
+android:id="@+id/imageView"
+...
+/>
+<TextView
+android:id="@+id/usernameTextView"
+...
+/>
+<TextView
+android:id="@+id/timestampTextView"
+...
+/>
